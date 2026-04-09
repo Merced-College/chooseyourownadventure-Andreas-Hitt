@@ -3,14 +3,25 @@
 
 #include <string>
 
+enum class ItemType { RESOURCE, WEAPON, UTILITY, TRASH };
+
 class Item {
 public:
     std::string name;
-    std::string rarity;
-    int weight;
+    ItemType type;
+    int power; 
 
-    Item(std::string n = "None", std::string r = "Common", int w = 1) 
-        : name(n), rarity(r), weight(w) {}
+    Item(std::string n = "None", ItemType t = ItemType::TRASH, int p = 0) 
+        : name(n), type(t), power(p) {}
+
+    std::string getTypeName() const {
+        switch(type) {
+            case ItemType::RESOURCE: return "Resource";
+            case ItemType::WEAPON:   return "Weapon";
+            case ItemType::UTILITY:  return "Utility";
+            default:                 return "Trash";
+        }
+    }
 };
 
 #endif

@@ -8,32 +8,43 @@
 
 class Player {
 private:
-    int health;
-    int money;
-    int luck;
+    int health, hunger, sanity, luck;
     std::vector<Item> inventory;
 
 public:
-    Player() : health(100), money(50), luck(5) {}
+    Player() : health(100), hunger(100), sanity(100), luck(10) {}
 
-    void adjustHealth(int amount) { health += amount; }
-    void adjustMoney(int amount) { money += amount; }
-    void addLuck(int amount) { luck += amount; }
+    void adjustHealth(int amt) { health += amt; if(health > 100) health = 100; }
+    void adjustHunger(int amt) { hunger += amt; if(hunger > 100) hunger = 100; }
+    void adjustSanity(int amt) { sanity += amt; if(sanity > 100) sanity = 100; }
+    void addLuck(int amt) { luck += amt; }
     void addItem(Item item) { inventory.push_back(item); }
 
     int getHealth() const { return health; }
+    int getHunger() const { return hunger; }
+    int getSanity() const { return sanity; }
     int getLuck() const { return luck; }
     int getInvSize() const { return (int)inventory.size(); }
     bool isAlive() const { return health > 0; }
-    
+
+    // This triggers when moving to a new node
+    void tickSurvival() {
+        hunger -= 5;
+        sanity -= 3;
+        if (hunger <= 0 || sanity <= 0) {
+            std::cout << ">> You are suffering from starvation or madness! -10 HP." << std::endl;
+            health -= 10;
+        }
+    }
+
     void displayStatus() const {
-        std::string condition = (health < 30) ? "WOUNDED" : "HEALTHY";
-        std::cout << "\n========================================" << std::endl;
-        std::cout << " STATUS: " << condition << " | HP: " << health << " | Gold: " << money << " | Luck: " << luck << std::endl;
-        std::cout << " INV: ";
+        std::cout << "\n====================================================" << std::endl;
+        std::cout << " STATUS | HP: " << health << " | Hunger: " << hunger 
+                  << " | Sanity: " << sanity << " | Luck: " << luck << std::endl;
+        std::cout << " Inventory: ";
         if(inventory.empty()) std::cout << "Empty";
-        for (const auto& item : inventory) std::cout << "[" << item.name << "] ";
-        std::cout << "\n========================================" << std::endl;
+        for(auto& i : inventory) std::cout << "[" << i.name << "] ";
+        std::cout << "\n====================================================" << std::endl;
     }
 };
 
